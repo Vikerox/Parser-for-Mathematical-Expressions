@@ -17,9 +17,9 @@
 int main ( int argc, char** argv )
 {
     setlocale ( LC_ALL, "en_US.UTF-8" ); // NOLINT(concurrency-mt-unsafe)
-    std::cout << "\tParser for Mathematical expressions - written by Johannes Konstantin Post\n"
-              << "\tFor questions and feedback consult the readme, use --help or -h for more options\n"
-              << "\t------------------------------ Copyright (C) 2023 ------------------------------\n\n";
+    std::cout << "\n\tParser for Mathematical expressions - written by Johannes Konstantin Post\n"
+              << "\tFor questions and feedback consult the readme, use --help or -h for more options, q to quit\n"
+              << "\t------------------------------------ Copyright(C) 2023 ------------------------------------\n\n";
     std::vector<std::string_view> args ( argc ); // NOLINT(cppcorequidelines-init-variables)
     for ( int i = 0; i < argc; ++i ) { args.emplace_back ( *std::next ( argv, static_cast<ptrdiff_t> ( i ) ) ); }
 
