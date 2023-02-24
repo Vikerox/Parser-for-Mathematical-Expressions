@@ -21,6 +21,14 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     
+    - name: Cache
+      uses: actions/cache@v3.2.6
+      with:
+        # A list of files, directories, and wildcard patterns to cache and restore
+        path: ${{env.INSTALL_LOCATION}}
+        # An explicit key for restoring and saving the cache
+        key: ${{runner.os}}-dependencies
+    
     - name: install GoogleTest
       if: ${{steps.cache.output.cache-hit != 'true'}}
       run: |
