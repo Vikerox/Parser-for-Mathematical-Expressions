@@ -1,3 +1,4 @@
+[![CMake](https://github.com/Vikerox/Parser-for-Mathematical-Expressions/actions/workflows/cmake.yml/badge.svg)](https://github.com/Vikerox/Parser-for-Mathematical-Expressions/actions/workflows/cmake.yml)
 # Parser for Mathematical Expressions
 A simple console based calculator
 
