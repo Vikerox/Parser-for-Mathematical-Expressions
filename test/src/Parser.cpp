@@ -27,11 +27,11 @@ TEST ( Parser, printBT )
     pfme::Parser parser_2 ( std::make_unique<pfme::Lexer> ( lex_2 ) );
 
     testing::internal::CaptureStdout();
-    pfme::Parser::printBT ( parser_1.parse().get() );
+    pfme::Parser::print_binary_tree ( parser_1.parse().get() );
     auto output_1 = testing::internal::GetCapturedStdout();
 
     testing::internal::CaptureStdout();
-    pfme::Parser::printBT ( parser_2.parse().get() );
+    pfme::Parser::print_binary_tree ( parser_2.parse().get() );
     auto output_2 = testing::internal::GetCapturedStdout();
 
     ASSERT_EQ ( output_1, "└──5\n\n" );

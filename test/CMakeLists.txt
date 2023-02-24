@@ -45,7 +45,7 @@ foreach(file ${test_sources})
   set(${CMAKE_PROJECT_NAME}_TEST_LIB ${CMAKE_PROJECT_NAME}_LIB)
 
   
-	find_package(GTest CONFIG REQUIRED)
+	find_package(GTest REQUIRED)
 
 	target_link_libraries(
 		Test_${test_name}
