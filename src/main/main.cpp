@@ -59,7 +59,7 @@ int main ( int argc, char** argv )
 
         try
         {
-            std::unique_ptr<pfme::Parser> parser { std::make_unique<pfme::Parser> (
+            std::unique_ptr<pfme::Parser>        parser { std::make_unique<pfme::Parser> (
                 std::move ( lexer ) ) }; // NOLINT(cppcorequidelines-init-variables)
             const std::unique_ptr<pfme::Visitor> visitor { std::make_unique<pfme::Visitor> (
                 std::move ( parser ) ) }; // NOLINT(cppcorequidelines-init-variables)
@@ -67,12 +67,10 @@ int main ( int argc, char** argv )
             {
                 visitor->set_debug_mode ( true );
                 visitor->print_tree();
-                std::visit ( [&] ( auto visit ) { std::cout << '\n' << input << " = " << visit; }, visitor->visit() );
+                auto res = visitor->visit();
+                std::cout << '\n' << input << " = " << res;
             }
-            else
-            {
-                std::visit ( [&] ( auto visit ) { std::cout << "" << visit; }, visitor->visit() );
-            }
+            else { std::cout << "" << visitor->visit(); }
         }
         catch ( const std::exception& e )
         {

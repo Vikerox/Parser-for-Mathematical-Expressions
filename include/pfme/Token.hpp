@@ -14,6 +14,7 @@ enum class TOKEN_TYPE : char
     TOKEN_DIVISION       = '/', /**< Division, represented by / */
     TOKEN_ADDITION       = '+', /**< Addition, represented by + */
     TOKEN_SUBTRACTION    = '-', /**< Subtraction, represented by - */
+    TOKEN_EXPONENTIATION = '^', /**< Exponentiation, represented by ^ */
     TOKEN_INTEGER        = '0', /**< Integer, represented by 0 */
     TOKEN_FLOAT          = '.', /**< Float, represented by . */
     TOKEN_EOF            = '#', /**< End of File, represented by # */

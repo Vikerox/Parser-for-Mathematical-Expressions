@@ -1,5 +1,4 @@
 #pragma once
-#include <any>
 #include <functional>
 #include <memory>
 #include <pfme/Parser.hpp>
@@ -12,7 +11,6 @@ namespace pfme
 class Visitor
 {
 public:
-    using num_t = std::variant<long long int, long double>;
     /**
      * Initialises the Visitor with a parser and will use parse().
      * @param parser is the parser that should be used
@@ -34,7 +32,7 @@ public:
 	 * 
 	 * @return Is a variant with the result of the calculation
 	 */
-    auto visit() -> num_t;
+    auto visit() -> std::string;
     /**
      * Helper function to print the tree.
      * @see Parser::print_binary_tree
@@ -50,8 +48,6 @@ private:
     std::unique_ptr<Parser>&& m_parser;
     bool                      m_debug_mode = false;
 
-    static auto traverse_tree ( std::shared_ptr<AST> node ) -> std::shared_ptr<AST>;
-    auto perform_operation ( const std::shared_ptr<AST>& operation, std::function<num_t ( num_t, num_t )>& bin_operator ) const
-        -> void;
+    static auto traverse_tree ( std::shared_ptr<AST>& node ) -> std::shared_ptr<AST>&;
 };
 } // namespace pfme

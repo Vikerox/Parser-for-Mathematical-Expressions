@@ -12,9 +12,9 @@ It calculates stuff.
 
 That's it, it's a calculator.
 
-At the moment it supports addition, subtraction, multiplication, division, parenthesis, and integer and floating point numbers.
+At the moment it supports addition, subtraction, multiplication, division, exponentiation, parenthesis, and integer and floating point numbers.
 
-Future support for fractions, exponents as well as literals and different language modes are planned.
+Future support for fractions, negative numbers, as well as literals and different language modes are planned.
 
 ## How do I use it?
 If you are on Windows you can just download the .exe from the latest release.
@@ -36,5 +36,16 @@ For example, if you take a long expression like 5 * 3 * 3 + ( ( 4.3 + 3 * 5 ) + 
 
 For more details I recommend going through the source files, all Interface methods have comments explaining their behaviour.
 
-## What can I do for you?
+## Does it have known quirks?
+Of course! A lot of them intended:
+ - Both `x.` and `.x` are valid numbers
+ - You do not have to open or close parenthesis, they will be treated as if the opening/closing parenthesis are at the beginning/end of the expression
+ - The last operation does not need a right-hand number, that number will be assumed to be 0 (e.g. `2 * 5 +` will be treated as `2 * 5 + 0`)
+ - Division results in a floating point number unless the two integers are cleanly divisible
+ - Floating point numbers are viral, if there is one in the expression, the entire expression will yield a float[^1]
+
+[^1]: if you exponentiate a number with `0` or `0.0`, regardless of type, it will result in an integer (`1`)
+
+(if you find more please tell me, I'll decide if it's a bug or intended :))
+## How can I help this project?
 If you have suggestions for new features feel free to tell me.

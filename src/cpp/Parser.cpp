@@ -85,13 +85,13 @@ auto Parser::parse_expression() -> void
 
     eat ( m_current_token->get_type() );
     // special case ')' -> eat token (get next token)
-    if ( m_current_token->get_type() == TOKEN_TYPE::TOKEN_R_PAREN )
+    while ( m_current_token->get_type() == TOKEN_TYPE::TOKEN_R_PAREN )
     {
         --m_parenthesis_level;
         eat ( m_current_token->get_type() );
     }
     const std::shared_ptr<AST> operation ( new AST ( std::move ( number ) ) );
-    operation->m_operation_level += m_parenthesis_level * 2;
+    operation->m_operation_level += m_parenthesis_level * 3;
     switch ( m_current_token->get_type() )
     {
     case TOKEN_TYPE::TOKEN_MULTIPLICATION:
@@ -112,6 +112,11 @@ auto Parser::parse_expression() -> void
         operation->m_type  = AST_TYPE::SUBTRACTION;
         operation->m_value = "-";
         break;
+    case TOKEN_TYPE::TOKEN_EXPONENTIATION:
+        operation->m_type  = AST_TYPE::EXPONENTIATION;
+        operation->m_value = "^";
+        operation->m_operation_level += 2;
+        break;
     case TOKEN_TYPE::TOKEN_EOF:
         // if m_root is empty (happens if the input is only one number) set m_root to the one know operation
         if ( this->m_root == nullptr ) { this->m_root = std::move ( operation->lhand ); }
@@ -120,12 +125,13 @@ auto Parser::parse_expression() -> void
         return;
     default:
         throw std::runtime_error (
-            m_lexer->error_string ( std::format ( "Invalid Token '{}' in expression\nShould be {}, {}, {} or {}",
+            m_lexer->error_string ( std::format ( "Invalid Token '{}' in expression\nShould be {}, {}, {}, {} or {}",
                                                   pfme::token_type_to_string ( m_current_token->get_type() ),
                                                   token_type_to_string ( TOKEN_TYPE::TOKEN_MULTIPLICATION ),
                                                   token_type_to_string ( TOKEN_TYPE::TOKEN_DIVISION ),
                                                   token_type_to_string ( TOKEN_TYPE::TOKEN_ADDITION ),
-                                                  token_type_to_string ( TOKEN_TYPE::TOKEN_SUBTRACTION ) ),
+                                                  token_type_to_string ( TOKEN_TYPE::TOKEN_SUBTRACTION ),
+                                                  token_type_to_string ( TOKEN_TYPE::TOKEN_EXPONENTIATION ) ),
                                     -1 ) );
     }
     add_operation ( operation );

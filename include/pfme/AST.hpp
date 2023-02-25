@@ -1,7 +1,10 @@
 #pragma once
+#include <cmath>
+#include <iostream>
 #include <memory>
+#include <stdexcept>
 #include <string>
-#include <variant>
+
 
 /**
  * @brief The namespace for all the functions, enums, and classes.
@@ -19,6 +22,7 @@ enum class AST_TYPE
     DIVISION,       /**< Division */
     ADDITION,       /**< Addition */
     SUBTRACTION,    /**< Subtraction */
+    EXPONENTIATION, /**< Exponentiation */
     INTEGER,        /**< Integer */
     FLOAT,          /**< Float */
     EMPTY,          /**< Empty */
@@ -40,6 +44,7 @@ struct AST
     std::shared_ptr<AST> rhand     = nullptr; /**< The right child node. */
     long long int        m_integer = 0;       /**< Stores the value as a long long int if the number is of type integer. */
     long double          m_float   = 0;       /**< Stores the value as a long double if the number is of type float. */
+
 
     AST()              = default;
     AST ( const AST& ) = default;
@@ -71,17 +76,6 @@ struct AST
     }
 
     /**
-	 * Get the value of the node depending on the node type.
-	 * @return A variant with long long int (for integer nodes) and long double (for float nodes), will always return 0 if the node is not a number @see is_num()
-	 */
-    auto value_for_type() const -> std::variant<long long int, long double>
-    {
-        if ( m_type == AST_TYPE::INTEGER ) { return m_integer; }
-        else if ( m_type == AST_TYPE::FLOAT ) { return m_float; }
-        return 0;
-    }
-
-    /**
 	 * Get a string corresponding to each type of node.
 	 * @return The name of the node type or the value for numbers @see is_num()
 	 */
@@ -93,6 +87,7 @@ struct AST
         case AST_TYPE::DIVISION: return "Division";
         case AST_TYPE::ADDITION: return "Addition";
         case AST_TYPE::SUBTRACTION: return "Subtraction";
+        case AST_TYPE::EXPONENTIATION: return "Exponentiation";
         case AST_TYPE::INTEGER: [[fallthrough]];
         case AST_TYPE::FLOAT: return m_value;
         case AST_TYPE::EMPTY: return "Empty";
@@ -107,6 +102,107 @@ struct AST
     auto is_num() const -> bool
     {
         return ( m_type == AST_TYPE::INTEGER || m_type == AST_TYPE::FLOAT || m_type == AST_TYPE::EMPTY );
+    }
+
+    friend auto operator+ ( AST lhs, const AST& rhs ) -> AST
+    {
+        if ( lhs.m_type == AST_TYPE::FLOAT && rhs.m_type == AST_TYPE::FLOAT )
+        {
+            return { AST_TYPE::FLOAT, std::to_string ( lhs.m_float + rhs.m_float ) };
+        }
+        else if ( lhs.m_type == AST_TYPE::FLOAT )
+        {
+            return { AST_TYPE::FLOAT, std::to_string ( lhs.m_float + rhs.m_integer ) };
+        }
+        else if ( rhs.m_type == AST_TYPE::FLOAT )
+        {
+            return { AST_TYPE::FLOAT, std::to_string ( lhs.m_integer + rhs.m_float ) };
+        }
+        return { AST_TYPE::INTEGER, std::to_string ( lhs.m_integer + rhs.m_integer ) };
+    }
+
+    friend auto operator- ( AST lhs, const AST& rhs ) -> AST
+    {
+        AST neg_rhs = rhs;
+        neg_rhs.m_float *= -1;
+        neg_rhs.m_integer *= -1;
+        return lhs + neg_rhs;
+    }
+
+    friend auto operator* ( AST lhs, const AST& rhs ) -> AST
+    {
+        if ( lhs.m_type == AST_TYPE::FLOAT && rhs.m_type == AST_TYPE::FLOAT )
+        {
+            return { AST_TYPE::FLOAT, std::to_string ( lhs.m_float * rhs.m_float ) };
+        }
+        else if ( lhs.m_type == AST_TYPE::FLOAT )
+        {
+            return { AST_TYPE::FLOAT, std::to_string ( lhs.m_float * rhs.m_integer ) };
+        }
+        else if ( rhs.m_type == AST_TYPE::FLOAT )
+        {
+            return { AST_TYPE::FLOAT, std::to_string ( lhs.m_integer * rhs.m_float ) };
+        }
+        return { AST_TYPE::INTEGER, std::to_string ( lhs.m_integer * rhs.m_integer ) };
+    }
+
+    friend auto operator/ ( AST lhs, const AST& rhs ) -> AST
+    {
+        if ( ( rhs.m_type == AST_TYPE::INTEGER && rhs.m_integer == 0 ) ||
+             ( rhs.m_type == AST_TYPE::FLOAT && rhs.m_float == 0 ) )
+        {
+            throw std::runtime_error ( "Division by Zero" );
+        }
+        if ( lhs.m_type == AST_TYPE::INTEGER && rhs.m_type == AST_TYPE::INTEGER && lhs.m_integer % rhs.m_integer == 0 )
+        {
+            return { AST_TYPE::INTEGER, std::to_string ( lhs.m_integer / rhs.m_integer ) };
+        }
+        else
+        {
+            AST inv_rhs = rhs;
+            if ( inv_rhs.m_type == AST_TYPE::FLOAT ) { inv_rhs.m_float = 1 / inv_rhs.m_float; }
+            else
+            {
+                inv_rhs.m_type  = AST_TYPE::FLOAT;
+                inv_rhs.m_float = static_cast<long double> ( 1 ) / inv_rhs.m_integer;
+            }
+            return lhs * inv_rhs;
+        }
+    }
+
+    friend auto operator^ ( AST lhs, const AST& rhs ) -> AST
+    {
+        if ( ( rhs.m_type == AST_TYPE::INTEGER && rhs.m_integer == 0 ) ||
+             ( rhs.m_type == AST_TYPE::FLOAT && rhs.m_float == 0 ) )
+        {
+            return { AST_TYPE::INTEGER, std::to_string ( 1 ) };
+        }
+        if ( lhs.m_type == AST_TYPE::INTEGER && rhs.m_type == AST_TYPE::INTEGER )
+        {
+            long long int res = 1;
+            for ( long long int i = 0; i < rhs.m_integer; ++i ) { res *= lhs.m_integer; }
+            return { AST_TYPE::INTEGER, std::to_string ( res ) };
+        }
+        if ( lhs.m_type == AST_TYPE::FLOAT && rhs.m_type == AST_TYPE::FLOAT )
+        {
+            return { AST_TYPE::FLOAT, std::to_string ( std::powl ( lhs.m_float, rhs.m_float ) ) };
+        }
+        else if ( lhs.m_type == AST_TYPE::FLOAT )
+        {
+            return { AST_TYPE::FLOAT, std::to_string ( std::powl ( lhs.m_float, rhs.m_integer ) ) };
+        }
+        return { AST_TYPE::FLOAT, std::to_string ( std::powl ( lhs.m_integer, rhs.m_float ) ) };
+    }
+
+    friend auto operator<< ( std::ostream& os, const AST& obj ) -> std::ostream&
+    {
+        if ( obj.is_num() ) { os << obj.m_value; }
+        else
+        {
+            os << "Operation: " << obj.lhand->operation_to_string() << ' ' << obj.operation_to_string() << ' '
+               << obj.rhand->operation_to_string();
+        }
+        return os;
     }
 };
 } // namespace pfme
