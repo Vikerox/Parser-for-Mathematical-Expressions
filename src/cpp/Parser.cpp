@@ -8,13 +8,16 @@ auto Parser::print_binary_tree ( const std::string& prefix, const AST* node, boo
     {
         std::cout << prefix;
 
+#pragma warning( suppress : 4566 )
         std::cout << ( isLeft ? "├──" : "└──" );
 
         // print the value of the node
         std::cout << node->m_value << '\n';
 
         // enter the next tree level - left and right branch
+#pragma warning( suppress : 4566 )
         print_binary_tree ( prefix + ( isLeft ? "│   " : "    " ), node->lhand.get(), true );
+#pragma warning( suppress : 4566 )
         print_binary_tree ( prefix + ( isLeft ? "│   " : "    " ), node->rhand.get(), false );
     }
 } //NOLINTEND(misc-no-recursion)
@@ -28,7 +31,6 @@ auto Parser::print_binary_tree ( const AST* node ) -> void
 Parser::Parser ( std::unique_ptr<Lexer>&& lexer )
     : m_lexer ( std::move ( lexer ) )
     , m_current_token ( m_lexer->get_next_token() )
-    , m_previous_token ( m_current_token->get_type() )
 {
 }
 
@@ -36,7 +38,6 @@ auto Parser::eat ( TOKEN_TYPE token ) -> void
 {
     if ( this->m_current_token->get_type() == token )
     {
-        this->m_previous_token = token;
         this->m_current_token  = this->m_lexer->get_next_token();
         return;
     }
@@ -59,6 +60,8 @@ auto Parser::parse() -> std::shared_ptr<AST>
             ++this->m_parenthesis_level;
             eat ( TOKEN_TYPE::TOKEN_L_PAREN );
             break;
+        case TOKEN_TYPE::TOKEN_SUBTRACTION: m_negative_sign = true;
+        case TOKEN_TYPE::TOKEN_ADDITION: eat ( this->m_current_token->get_type() );
         case TOKEN_TYPE::TOKEN_INTEGER: [[fallthrough]];
         case TOKEN_TYPE::TOKEN_FLOAT: parse_expression(); break;
         default:
@@ -81,7 +84,7 @@ auto Parser::parse_expression() -> void
 {
     std::shared_ptr<AST> number (
         new AST ( TOKEN_TYPE::TOKEN_INTEGER == m_current_token->get_type() ? AST_TYPE::INTEGER : AST_TYPE::FLOAT,
-                  m_current_token->get_value() ) );
+                  m_current_token->get_value().insert ( 0, ( m_negative_sign ? "-" : "" ) ) ) );
 
     eat ( m_current_token->get_type() );
     // special case ')' -> eat token (get next token)

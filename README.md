@@ -12,9 +12,9 @@ It calculates stuff.
 
 That's it, it's a calculator.
 
-At the moment it supports addition, subtraction, multiplication, division, exponentiation, parenthesis, and integer and floating point numbers.
+At the moment it supports addition, subtraction, multiplication, division, exponentiation, parenthesis, and integer and floating point numbers (both signed and unsigned).
 
-Future support for fractions, negative numbers, as well as literals and different language modes are planned.
+Future support for fractions is planned.
 
 ## How do I use it?
 If you are on Windows you can just download the .exe from the latest release.

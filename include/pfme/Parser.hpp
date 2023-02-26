@@ -89,9 +89,9 @@ public:
 private:
     std::unique_ptr<Lexer> m_lexer             = nullptr;
     std::unique_ptr<Token> m_current_token     = nullptr;
-    TOKEN_TYPE             m_previous_token    = TOKEN_TYPE::TOKEN_EOF;
     std::shared_ptr<AST>   m_root              = nullptr;
     int                    m_parenthesis_level = 0;
+    bool                   m_negative_sign     = false;
 
     auto                      parse_expression() -> void;
     auto                      eat ( TOKEN_TYPE token ) -> void;

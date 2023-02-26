@@ -67,14 +67,20 @@ struct AST
         if ( m_type == AST_TYPE::INTEGER ) { m_number = std::stoll ( m_value ); }
         else if ( m_type == AST_TYPE::FLOAT ) { m_number = std::stold ( m_value ); }
     }
-
+    /**
+     * Helper constructor, sets the node as type integer.
+     * @param number is the integer number the node will be set to
+     */
     explicit AST ( long long int number )
         : m_type ( AST_TYPE::INTEGER )
         , m_value ( std::to_string ( number ) )
         , m_number ( number )
     {
     }
-
+    /**
+     * Helper constructor, sets the node as type float without losing precision.
+     * @param number is the float number the node will be set to
+     */
     explicit AST ( long double number )
         : m_type ( AST_TYPE::FLOAT )
         , m_value ( std::to_string ( number ) )

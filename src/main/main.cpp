@@ -25,6 +25,7 @@ int main ( int argc, char** argv )
 
     bool debugInfo     = false;
     bool verboseOutput = false;
+    bool german_mode   = false;
     if ( std::find ( args.begin(), args.end(), "-d" ) != args.end() ||
          std::find ( args.begin(), args.end(), "--debug" ) != args.end() )
     {
@@ -35,12 +36,18 @@ int main ( int argc, char** argv )
     {
         verboseOutput = true;
     }
+    if ( std::find ( args.begin(), args.end(), "-ger" ) != args.end() )
+    {
+        ignore      = setlocale ( LC_ALL, "de_DE.UTF-8" );
+        german_mode = true;
+    }
     if ( std::find ( args.begin(), args.end(), "-h" ) != args.end() ||
          std::find ( args.begin(), args.end(), "--help" ) != args.end() )
     {
         std::cout << "\nPossible arguments are:\n"
-                  << "\t-d, --debug\tactivate debug mode for more verbose output\n"
-                  << "\t-h, --help\tshow all possible arguments\n\n";
+                  << "\t-d, --debug    activate debug mode for more verbose output\n"
+                  << "\t-ger           activate german input mode (the comma seperator and the point switch roles)\n"
+                  << "\t-h, --help     show all possible arguments\n\n";
         return 0;
     }
 
@@ -53,9 +60,16 @@ int main ( int argc, char** argv )
 
         if ( std::all_of ( input.begin(), input.end(), ::isspace ) ) { continue; }
         if ( input == "q" || input == "Q" ) { break; }
-
-        std::unique_ptr<pfme::Lexer> lexer { std::make_unique<pfme::Lexer> (
-            input ) }; // NOLINT(cppcorequidelines-init-variables)
+        std::unique_ptr<pfme::Lexer> lexer;
+        if ( !german_mode )
+        {
+            lexer = std::make_unique<pfme::Lexer> ( input ); // NOLINT(cppcorequidelines-init-variables)
+        }
+        else
+        {
+            lexer = std::make_unique<pfme::Lexer> (
+                input, ',', std::vector<char> { '.', '\'', '_' } ); // NOLINT(cppcorequidelines-init-variables)
+        }
 
         try
         {

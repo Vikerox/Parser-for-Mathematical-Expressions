@@ -11,11 +11,14 @@ TEST ( Parser, parse )
     pfme::Parser parser_3 ( std::make_unique<pfme::Lexer> ( lex_3 ) );
     pfme::Lexer  lex_4 ( "5*(2+2)" );
     pfme::Parser parser_4 ( std::make_unique<pfme::Lexer> ( lex_4 ) );
+    pfme::Lexer  lex_5 ( "-1" );
+    pfme::Parser parser_5 ( std::make_unique<pfme::Lexer> ( lex_5 ) );
 
     ASSERT_EQ ( parser_1.parse()->m_type, pfme::AST_TYPE::INTEGER );
     ASSERT_EQ ( parser_2.parse()->m_type, pfme::AST_TYPE::ADDITION );
     ASSERT_EQ ( parser_3.parse()->m_type, pfme::AST_TYPE::ADDITION );
     ASSERT_EQ ( parser_4.parse()->m_type, pfme::AST_TYPE::MULTIPLICATION );
+    ASSERT_EQ ( parser_1.parse()->m_type, pfme::AST_TYPE::INTEGER );
 }
 
 TEST ( Parser, printBT )
@@ -34,7 +37,9 @@ TEST ( Parser, printBT )
     pfme::Parser::print_binary_tree ( parser_2.parse().get() );
     auto output_2 = testing::internal::GetCapturedStdout();
 
+#pragma warning( suppress : 4566 )
     ASSERT_EQ ( output_1, "└──5\n\n" );
+#pragma warning( suppress : 4566 )
     ASSERT_EQ ( output_2.starts_with ( "└──*\n" ), true );
 }
 

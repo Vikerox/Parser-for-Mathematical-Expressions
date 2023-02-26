@@ -6,7 +6,7 @@ set(CMAKE_FIND_DEBUG_MODE 1)
 
 project (
 	Parser-for-Mathematical-Expressions
-	VERSION 0.2.0
+	VERSION 0.6.0
 	LANGUAGES CXX
 )
 
@@ -57,17 +57,6 @@ include(cmake/CompilerWarnings.cmake)
 
 set_project_warnings(${PROJECT_NAME})
 
-
-# find_package(fmt CONFIG REQUIRED)
-
-# target_link_libraries(${PROJECT_NAME} PRIVATE fmt::fmt-header-only)
-
-#find_package(pdcurses)
-
-#find_path(CURSES_INCLUDE_DIRS curses.h)
-#find_library(CURSES_LIBRARYS pdcurses)
-#include_directories(${CURSES_INCLUDE_DIRS})
-#target_link_libraries(${PROJECT_NAME} PRIVATE ${CURSES_LIBRARYS})
 
 #
 # Format the project using the `clang-format` target (i.e: cmake --build build --target clang-format)

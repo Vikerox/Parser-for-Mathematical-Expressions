@@ -4,6 +4,7 @@
 #include <pfme/Token.hpp>
 #include <string>
 #include <string_view>
+#include <vector>
 namespace pfme
 {
 
@@ -26,6 +27,7 @@ public:
     Lexer& operator= ( const Lexer& ) = default;
     Lexer& operator= ( Lexer&& )      = default;
 
+    Lexer ( std::string_view data, char point_sym, std::vector<char> seperators );
     /**
 	 * Collects the next token.
 	 * @return The found token as an unique_ptr
@@ -53,9 +55,11 @@ public:
     auto error_string ( std::string_view msg, int index_modifier = 0 ) -> std::string;
 
 private:
-    unsigned int m_index = 0;    /**< The index, the position of the Lexer in the string */
-    std::string  m_contents;     /**< The content of the Lexer */
-    char         m_current_char; /**< The current character, will be the same as m_contents[m_index] */
+    unsigned int      m_index = 0;    /**< The index, the position of the Lexer in the string */
+    std::string       m_contents;     /**< The content of the Lexer */
+    char              m_current_char; /**< The current character, will be the same as m_contents[m_index] */
+    char              m_point_symbol = '.';
+    std::vector<char> m_seperators { '\'', ',', '_' };
 
     /**
 	 * Advances the Lexer by one character, changes m_index and m_current_char.
