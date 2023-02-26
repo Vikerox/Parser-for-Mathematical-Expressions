@@ -19,10 +19,10 @@ TEST ( Visitor, visit )
     parser_4->parse();
     pfme::Visitor visitor_4 ( std::move ( parser_4 ) );
 
-    ASSERT_EQ ( std::get<long long int> ( visitor_1.visit() ), 5 );
-    ASSERT_EQ ( std::get<long long int> ( visitor_2.visit() ), 5 + 5 );
-    ASSERT_DOUBLE_EQ ( std::get<long double> ( visitor_3.visit() ), 5. / 5 );
-    ASSERT_DOUBLE_EQ ( std::get<long double> ( visitor_4.visit() ), 5 + 3.8 );
+    ASSERT_EQ ( visitor_1.visit(), std::to_string ( 5 ) );
+    ASSERT_EQ ( visitor_2.visit(), std::to_string ( 5 + 5 ) );
+    ASSERT_EQ ( visitor_3.visit(), std::to_string ( 5 / 5 ) );
+    ASSERT_EQ ( visitor_4.visit(), std::to_string ( 5 + 3.8 ) );
 }
 
 int main ( int argc, char** argv )

@@ -19,14 +19,14 @@ auto Visitor::visit() -> std::string
         if ( m_debug_mode ) { std::cout << *operation.get(); }
         switch ( operation->m_type )
         {
-        case AST_TYPE::MULTIPLICATION: *operation.get() = *operation->lhand.get() * *operation->rhand.get(); break;
-        case AST_TYPE::DIVISION: *operation.get() = *operation->lhand.get() / *operation->rhand.get(); break;
-        case AST_TYPE::ADDITION: *operation.get() = *operation->lhand.get() + *operation->rhand.get(); break;
-        case AST_TYPE::SUBTRACTION: *operation.get() = *operation->lhand.get() - *operation->rhand.get(); break;
-        case AST_TYPE::EXPONENTIATION: *operation.get() = *operation->lhand.get() ^ *operation->rhand.get(); break;
+        case AST_TYPE::MULTIPLICATION: *operation = *operation->lhand * *operation->rhand; break;
+        case AST_TYPE::DIVISION: *operation = *operation->lhand / *operation->rhand; break;
+        case AST_TYPE::ADDITION: *operation = *operation->lhand + *operation->rhand; break;
+        case AST_TYPE::SUBTRACTION: *operation = *operation->lhand - *operation->rhand; break;
+        case AST_TYPE::EXPONENTIATION: *operation = *operation->lhand ^ *operation->rhand; break;
         default: break;
         }
-        if ( m_debug_mode ) { std::cout << " = " << *operation.get() << '\n'; }
+        if ( m_debug_mode ) { std::cout << " = " << *operation << '\n'; }
     }
     return root->m_value;
 }

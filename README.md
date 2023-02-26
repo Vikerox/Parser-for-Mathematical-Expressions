@@ -44,7 +44,7 @@ Of course! A lot of them intended:
  - Division results in a floating point number unless the two integers are cleanly divisible
  - Floating point numbers are viral, if there is one in the expression, the entire expression will yield a float[^1]
 
-[^1]: if you exponentiate a number with `0` or `0.0`, regardless of type, it will result in an integer (`1`)
+[^1]: If you exponentiate a number with `0` or `0.0`, regardless of type, it will result in an integer (`1`)
 
 (if you find more please tell me, I'll decide if it's a bug or intended :))
 ## How can I help this project?

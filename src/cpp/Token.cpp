@@ -4,7 +4,7 @@ namespace pfme
 
 auto token_type_to_string ( TOKEN_TYPE type ) -> std::string
 {
-    std::string ret {};
+    std::string ret = "TOKEN_UNKNOWN";
     switch ( type )
     {
     case TOKEN_TYPE::TOKEN_L_PAREN: ret = "TOKEN_L_PAREN"; break;
@@ -17,8 +17,8 @@ auto token_type_to_string ( TOKEN_TYPE type ) -> std::string
     case TOKEN_TYPE::TOKEN_INTEGER: ret = "TOKEN_INTEGER"; break;
     case TOKEN_TYPE::TOKEN_FLOAT: ret = "TOKEN_FLOAT"; break;
     case TOKEN_TYPE::TOKEN_EOF: ret = "TOKEN_EOF"; break;
-    case TOKEN_TYPE::TOKEN_UNKNOWN: ret = "TOKEN_UNKNOWN"; break;
-    default: ret = "TOKEN_UNKNOWN"; break;
+    case TOKEN_TYPE::TOKEN_UNKNOWN: break;
+    default: break;
     }
     return ret;
 }
