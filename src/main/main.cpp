@@ -16,7 +16,7 @@
 
 int main ( int argc, char** argv )
 {
-    [[maybe_unused]] auto ignore = setlocale ( LC_ALL, "en_US.UTF-8" ); // NOLINT(concurrency-mt-unsafe)
+    [[maybe_unused]] auto* ignore = setlocale ( LC_ALL, "en_US.UTF-8" ); // NOLINT(concurrency-mt-unsafe)
     std::cout << "\n\tParser for Mathematical expressions - written by Johannes Konstantin Post\n"
               << "\tFor questions and feedback consult the readme, use --help or -h for more options, q to quit\n"
               << "\t------------------------------------ Copyright(C) 2023 ------------------------------------\n\n";

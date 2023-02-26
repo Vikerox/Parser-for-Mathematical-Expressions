@@ -37,13 +37,14 @@ enum class AST_TYPE : int
  */
 struct AST
 {
+    using num_t                  = std::variant<long long int, long double>;
     AST_TYPE             m_type  = AST_TYPE::EMPTY; /**< The type of the node, set to empty. */
     std::string          m_value = "0"; /**< The Value of the node, generally either the number as a string or the operation. */
+    num_t                m_number          = 0LL;
     int                  m_operation_level = 0; /**< The operation level, used to determine how the nodes are ordered. */
     std::shared_ptr<AST> lhand =
         nullptr; /**< The left child node, will typically never be empty unless the node is a number. */
-    std::shared_ptr<AST>                     rhand = nullptr; /**< The right child node. */
-    std::variant<long long int, long double> m_number;
+    std::shared_ptr<AST> rhand = nullptr; /**< The right child node. */
 
 
     AST()              = default;
@@ -67,14 +68,14 @@ struct AST
         else if ( m_type == AST_TYPE::FLOAT ) { m_number = std::stold ( m_value ); }
     }
 
-	AST(long long int number)
+    explicit AST ( long long int number )
         : m_type ( AST_TYPE::INTEGER )
         , m_value ( std::to_string ( number ) )
         , m_number ( number )
     {
     }
 
-	AST ( long double number )
+    explicit AST ( long double number )
         : m_type ( AST_TYPE::FLOAT )
         , m_value ( std::to_string ( number ) )
         , m_number ( number )

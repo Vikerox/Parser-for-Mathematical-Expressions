@@ -33,13 +33,13 @@ auto operator/ ( const AST& lhs, const AST& rhs ) -> AST
          std::get<long long int> ( lhs.m_number ) % std::get<long long int> ( rhs.m_number ) ==
              0 ) // preserve the type if there is a "clean" integer division
     {
-        return { std::get<long long int> ( lhs.m_number ) / std::get<long long int> ( rhs.m_number ) };
+        return AST { std::get<long long int> ( lhs.m_number ) / std::get<long long int> ( rhs.m_number ) };
     }
     long double res {};
     std::visit ( [&] ( auto div1, auto div2 ) { res = static_cast<long double> ( div1 ) / static_cast<long double> ( div2 ); },
                  lhs.m_number,
                  rhs.m_number );
-    return { res };
+    return AST { res };
 }
 
 auto operator^ ( const AST& lhs, const AST& rhs ) -> AST
@@ -47,7 +47,7 @@ auto operator^ ( const AST& lhs, const AST& rhs ) -> AST
     if ( ( rhs.m_type == AST_TYPE::INTEGER && std::get<long long int> ( rhs.m_number ) == 0 ) ||
          ( rhs.m_type == AST_TYPE::FLOAT && std::get<long double> ( rhs.m_number ) == 0 ) )
     {
-        return { 1ll };
+        return AST { 1LL };
     }
     if ( lhs.m_type == AST_TYPE::INTEGER &&
          rhs.m_type == AST_TYPE::INTEGER ) // exponentiation while preserving the integer type
@@ -57,7 +57,7 @@ auto operator^ ( const AST& lhs, const AST& rhs ) -> AST
         {
             res *= std::get<long long int> ( lhs.m_number );
         }
-        return { res };
+        return AST { res };
     }
 
     long double res {};
@@ -67,7 +67,7 @@ auto operator^ ( const AST& lhs, const AST& rhs ) -> AST
         },
         lhs.m_number,
         rhs.m_number );
-    return { res };
+    return AST { res };
 }
 
 auto operator<< ( std::ostream& stream, const AST& obj ) -> std::ostream&

@@ -29,12 +29,14 @@ function(add_clang_tidy_target)
 
 endfunction()
 
-function(add_clang_cppcheck)
-	find_program(CLANGTIDY clang-tidy)
-	if(CLANGTIDY)
-		set(CMAKE_CXX_CLANG_TIDY ${CLANGTIDY} --extra-arg=-Wno-unknown-warning-option --extra-arg=-Xclang --extra-arg=-fcxx-exceptions)
-		message("Clang-Tidy finished setting up.")
-	else()
-		message(SEND_ERROR "Clang-Tidy requested but executable not found.")
-	endif()
+function(add_cppcheck_target)
+	find_program(CPPCHECK cppcheck)
+    set(CMAKE_CXX_CPPCHECK ${CPPCHECK} --suppress=missingInclude --enable=all
+                           --inline-suppr --inconclusive)
+	add_custom_target(
+		cppckeck
+		COMMAND ${CMAKE_CXX_CPPCHECK}
+        ${absolute_exe_sources}
+        ${absolute_headers}
+	)
 endfunction()

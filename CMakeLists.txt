@@ -6,7 +6,7 @@ set(CMAKE_FIND_DEBUG_MODE 1)
 
 project (
 	Parser-for-Mathematical-Expressions
-	VERSION 0.1.0
+	VERSION 0.2.0
 	LANGUAGES CXX
 )
 
@@ -106,16 +106,7 @@ target_include_directories(
 
 add_clang_tidy_target()
 
-#if(${PROJECT_NAME}_ENABLE_CPPCHECK)
-#  find_program(CPPCHECK cppcheck)
-#  if(CPPCHECK)
-#    set(CMAKE_CXX_CPPCHECK ${CPPCHECK} --suppress=missingInclude --enable=all
-#                           --inline-suppr --inconclusive -i ${CMAKE_SOURCE_DIR}/imgui/lib)
-#    message("Cppcheck finished setting up.")
-#  else()
-#    message(SEND_ERROR "Cppcheck requested but executable not found.")
-#  endif()
-# endif()
+ADD_CPPCHECK_TARGET()
 
 #
 # CCache

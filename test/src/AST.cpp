@@ -26,7 +26,7 @@ TEST ( AST, Constructor )
     ASSERT_EQ ( ast_node.rhand, nullptr );
     ASSERT_NE ( ast_node.lhand, nullptr );
 
-	ASSERT_EQ ( ast_float.m_type, pfme::AST_TYPE::FLOAT );
+    ASSERT_EQ ( ast_float.m_type, pfme::AST_TYPE::FLOAT );
     ASSERT_EQ ( ast_float.m_value, std::to_string ( 2.37l ) );
     ASSERT_DOUBLE_EQ ( std::get<long double> ( ast_float.m_number ), 2.37l );
 

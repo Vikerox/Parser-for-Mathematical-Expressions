@@ -68,12 +68,12 @@ public:
 	 * Getter for the type.
 	 * @return The TOKEN_TYPE of the Token
 	 */
-    auto get_type() -> TOKEN_TYPE { return m_type; }
+    auto get_type() const -> TOKEN_TYPE { return m_type; }
     /**
 	 * Getter for the value.
 	 * @return The value of the Token
 	 */
-    auto get_value() -> std::string { return m_value; }
+    auto get_value() const -> std::string { return m_value; }
 
 private:
     TOKEN_TYPE  m_type { TOKEN_TYPE::TOKEN_UNKNOWN };

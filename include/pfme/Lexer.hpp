@@ -36,7 +36,7 @@ public:
      * Getter for the content.
      * @return The content of the Lexer as a string
      */
-    auto get_content() -> std::string { return m_contents; }
+    auto get_content() const -> std::string { return m_contents; }
     /**
      * @brief Helper function for generating error messages.
      * The generated string once printed will look like this:

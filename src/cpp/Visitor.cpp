@@ -15,8 +15,8 @@ auto Visitor::visit() -> std::string
     auto root = this->m_parser->get_root();
     while ( !root->is_num() )
     {
-        auto& operation = traverse_tree ( root );
-        if ( m_debug_mode ) { std::cout << *operation.get(); }
+        const auto& operation = traverse_tree ( root );
+        if ( m_debug_mode ) { std::cout << *operation; }
         switch ( operation->m_type )
         {
         case AST_TYPE::MULTIPLICATION: *operation = *operation->lhand * *operation->rhand; break;
