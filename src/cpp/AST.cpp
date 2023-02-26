@@ -3,31 +3,23 @@ namespace pfme
 {
 auto operator+ ( const AST& lhs, const AST& rhs ) -> AST
 {
-    std::string    res {};
-    const AST_TYPE res_type =
-        lhs.m_type == AST_TYPE::FLOAT || rhs.m_type == AST_TYPE::FLOAT ? AST_TYPE::FLOAT : AST_TYPE::INTEGER;
-    std::visit ( [&] ( auto add1, auto add2 ) { res = std::to_string ( add1 + add2 ); }, lhs.m_number, rhs.m_number );
-    return { res_type, res };
+    AST node;
+    std::visit ( [&] ( auto add1, auto add2 ) { node = AST { add1 + add2 }; }, lhs.m_number, rhs.m_number );
+    return node;
 }
 
 auto operator- ( const AST& lhs, const AST& rhs ) -> AST
 {
-    std::string    res {};
-    const AST_TYPE res_type =
-        lhs.m_type == AST_TYPE::FLOAT || rhs.m_type == AST_TYPE::FLOAT ? AST_TYPE::FLOAT : AST_TYPE::INTEGER;
-    std::visit (
-        [&] ( auto minuend, auto subtrahend ) { res = std::to_string ( minuend - subtrahend ); }, lhs.m_number, rhs.m_number );
-    return { res_type, res };
+    AST node;
+    std::visit ( [&] ( auto minuend, auto subtrahend ) { node = AST { minuend - subtrahend }; }, lhs.m_number, rhs.m_number );
+    return node;
 }
 
 auto operator* ( const AST& lhs, const AST& rhs ) -> AST
 {
-    std::string    res {};
-    const AST_TYPE res_type =
-        lhs.m_type == AST_TYPE::FLOAT || rhs.m_type == AST_TYPE::FLOAT ? AST_TYPE::FLOAT : AST_TYPE::INTEGER;
-    std::visit (
-        [&] ( auto factor1, auto factor2 ) { res = std::to_string ( factor1 * factor2 ); }, lhs.m_number, rhs.m_number );
-    return { res_type, res };
+    AST node;
+    std::visit ( [&] ( auto factor1, auto factor2 ) { node = AST { factor1 * factor2 }; }, lhs.m_number, rhs.m_number );
+    return node;
 }
 
 auto operator/ ( const AST& lhs, const AST& rhs ) -> AST
@@ -41,15 +33,13 @@ auto operator/ ( const AST& lhs, const AST& rhs ) -> AST
          std::get<long long int> ( lhs.m_number ) % std::get<long long int> ( rhs.m_number ) ==
              0 ) // preserve the type if there is a "clean" integer division
     {
-        return { AST_TYPE::INTEGER,
-                 std::to_string ( std::get<long long int> ( lhs.m_number ) / std::get<long long int> ( rhs.m_number ) ) };
+        return { std::get<long long int> ( lhs.m_number ) / std::get<long long int> ( rhs.m_number ) };
     }
-    std::string    res {};
-    const AST_TYPE res_type = AST_TYPE::FLOAT;
-    std::visit ( [&] ( auto div1, auto div2 ) { res = std::to_string ( static_cast<long double> ( div1 ) / div2 ); },
+    long double res {};
+    std::visit ( [&] ( auto div1, auto div2 ) { res = static_cast<long double> ( div1 ) / static_cast<long double> ( div2 ); },
                  lhs.m_number,
                  rhs.m_number );
-    return { res_type, res };
+    return { res };
 }
 
 auto operator^ ( const AST& lhs, const AST& rhs ) -> AST
@@ -57,7 +47,7 @@ auto operator^ ( const AST& lhs, const AST& rhs ) -> AST
     if ( ( rhs.m_type == AST_TYPE::INTEGER && std::get<long long int> ( rhs.m_number ) == 0 ) ||
          ( rhs.m_type == AST_TYPE::FLOAT && std::get<long double> ( rhs.m_number ) == 0 ) )
     {
-        return { AST_TYPE::INTEGER, std::to_string ( 1 ) };
+        return { 1ll };
     }
     if ( lhs.m_type == AST_TYPE::INTEGER &&
          rhs.m_type == AST_TYPE::INTEGER ) // exponentiation while preserving the integer type
@@ -67,17 +57,17 @@ auto operator^ ( const AST& lhs, const AST& rhs ) -> AST
         {
             res *= std::get<long long int> ( lhs.m_number );
         }
-        return { AST_TYPE::INTEGER, std::to_string ( res ) };
+        return { res };
     }
-    std::string    res {};
-    const AST_TYPE res_type = AST_TYPE::FLOAT; // result will always be float
+
+    long double res {};
     std::visit (
         [&] ( auto base, auto exponent ) {
-            res = std::to_string ( std::powl ( static_cast<long double> ( base ), static_cast<long double> ( exponent ) ) );
+            res = std::powl ( static_cast<long double> ( base ), static_cast<long double> ( exponent ) );
         },
         lhs.m_number,
         rhs.m_number );
-    return { res_type, res };
+    return { res };
 }
 
 auto operator<< ( std::ostream& stream, const AST& obj ) -> std::ostream&

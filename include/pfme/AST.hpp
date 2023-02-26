@@ -66,6 +66,20 @@ struct AST
         if ( m_type == AST_TYPE::INTEGER ) { m_number = std::stoll ( m_value ); }
         else if ( m_type == AST_TYPE::FLOAT ) { m_number = std::stold ( m_value ); }
     }
+
+	AST(long long int number)
+        : m_type ( AST_TYPE::INTEGER )
+        , m_value ( std::to_string ( number ) )
+        , m_number ( number )
+    {
+    }
+
+	AST ( long double number )
+        : m_type ( AST_TYPE::FLOAT )
+        , m_value ( std::to_string ( number ) )
+        , m_number ( number )
+    {
+    }
     /**
      * Sets the left hand child node (all other values will be set to their defaults).
      * @param left_hand will become the lhand of the node
