@@ -25,13 +25,14 @@ jobs:
       uses: actions/cache@v3.2.6
       with:
         # A list of files, directories, and wildcard patterns to cache and restore
-        path: /googletest
+        path: ~/googletest
         # An explicit key for restoring and saving the cache
         key: ${{runner.os}}-dependencies
     
     - name: install GoogleTest
       if: ${{steps.cache.output.cache-hit != 'true'}}
       run: |
+        cd ~
         git clone https://github.com/google/googletest.git
         cd googletest
         cmake -Bbuild -DCMAKE_INSTALL_PREFIX="$HOME/$env:INSTALL_LOCATION" -Dgtest_force_shared_crt=1
