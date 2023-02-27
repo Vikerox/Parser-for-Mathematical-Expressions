@@ -34,11 +34,17 @@ Parser::Parser ( std::unique_ptr<Lexer>&& lexer )
 {
 }
 
+Parser::Parser ( const std::string& input )
+    : m_lexer ( std::make_unique<Lexer> ( input ) )
+    , m_current_token ( m_lexer->get_next_token() )
+{
+}
+
 auto Parser::eat ( TOKEN_TYPE token ) -> void
 {
     if ( this->m_current_token->get_type() == token )
     {
-        this->m_current_token  = this->m_lexer->get_next_token();
+        this->m_current_token = this->m_lexer->get_next_token();
         return;
     }
 
@@ -85,6 +91,7 @@ auto Parser::parse_expression() -> void
     std::shared_ptr<AST> number (
         new AST ( TOKEN_TYPE::TOKEN_INTEGER == m_current_token->get_type() ? AST_TYPE::INTEGER : AST_TYPE::FLOAT,
                   m_current_token->get_value().insert ( 0, ( m_negative_sign ? "-" : "" ) ) ) );
+    m_negative_sign = false;
 
     eat ( m_current_token->get_type() );
     // special case ')' -> eat token (get next token)

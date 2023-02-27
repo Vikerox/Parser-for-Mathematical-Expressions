@@ -11,6 +11,15 @@
 #include <variant>
 #include <vector>
 
+struct Modes
+{
+    bool debugInfo     = false;
+    bool verboseOutput = false;
+    bool german_mode   = false;
+};
+
+
+auto parse_arguments ( const std::vector<std::string_view>& args ) -> Modes;
 
 // "5 * 3 * 3 + ( ( 4.3 + 3 * 5 ) + 24 ) * 3 / 7"
 
@@ -23,34 +32,8 @@ int main ( int argc, char** argv )
     std::vector<std::string_view> args ( argc ); // NOLINT(cppcorequidelines-init-variables)
     for ( int i = 0; i < argc; ++i ) { args.emplace_back ( *std::next ( argv, static_cast<ptrdiff_t> ( i ) ) ); }
 
-    bool debugInfo     = false;
-    bool verboseOutput = false;
-    bool german_mode   = false;
-    if ( std::find ( args.begin(), args.end(), "-d" ) != args.end() ||
-         std::find ( args.begin(), args.end(), "--debug" ) != args.end() )
-    {
-        debugInfo = true;
-    }
-    if ( std::find ( args.begin(), args.end(), "-v" ) != args.end() ||
-         std::find ( args.begin(), args.end(), "--verbose" ) != args.end() )
-    {
-        verboseOutput = true;
-    }
-    if ( std::find ( args.begin(), args.end(), "-ger" ) != args.end() )
-    {
-        ignore      = setlocale ( LC_ALL, "de_DE.UTF-8" );
-        german_mode = true;
-    }
-    if ( std::find ( args.begin(), args.end(), "-h" ) != args.end() ||
-         std::find ( args.begin(), args.end(), "--help" ) != args.end() )
-    {
-        std::cout << "\nPossible arguments are:\n"
-                  << "\t-d, --debug    activate debug mode for more verbose output\n"
-                  << "\t-ger           activate german input mode (the comma seperator and the point switch roles)\n"
-                  << "\t-h, --help     show all possible arguments\n\n";
-        return 0;
-    }
-
+    auto modes = parse_arguments ( args );
+    
     while ( true )
     {
         std::cout << "$ = ";
@@ -61,7 +44,7 @@ int main ( int argc, char** argv )
         if ( std::all_of ( input.begin(), input.end(), ::isspace ) ) { continue; }
         if ( input == "q" || input == "Q" ) { break; }
         std::unique_ptr<pfme::Lexer> lexer;
-        if ( !german_mode )
+        if ( !modes.german_mode )
         {
             lexer = std::make_unique<pfme::Lexer> ( input ); // NOLINT(cppcorequidelines-init-variables)
         }
@@ -73,11 +56,9 @@ int main ( int argc, char** argv )
 
         try
         {
-            std::unique_ptr<pfme::Parser>        parser { std::make_unique<pfme::Parser> (
-                std::move ( lexer ) ) }; // NOLINT(cppcorequidelines-init-variables)
             const std::unique_ptr<pfme::Visitor> visitor { std::make_unique<pfme::Visitor> (
-                std::move ( parser ) ) }; // NOLINT(cppcorequidelines-init-variables)
-            if ( debugInfo )
+                std::move ( lexer ) ) }; // NOLINT(cppcorequidelines-init-variables)
+            if ( modes.debugInfo )
             {
                 visitor->set_debug_mode ( true );
                 visitor->print_tree();
@@ -88,9 +69,41 @@ int main ( int argc, char** argv )
         }
         catch ( const std::exception& e )
         {
-            if ( verboseOutput ) { std::cerr << '\n' << e.what(); }
+            if ( modes.verboseOutput ) { std::cerr << '\n' << e.what(); }
             else { std::cerr << "illformed expression"; }
         }
         std::cout << '\n';
     }
+}
+
+
+
+auto parse_arguments (const std::vector<std::string_view>& args ) -> Modes
+{
+    Modes modes;
+    if ( std::find ( args.begin(), args.end(), "-d" ) != args.end() ||
+         std::find ( args.begin(), args.end(), "--debug" ) != args.end() )
+    {
+        modes.debugInfo = true;
+    }
+    if ( std::find ( args.begin(), args.end(), "-v" ) != args.end() ||
+         std::find ( args.begin(), args.end(), "--verbose" ) != args.end() )
+    {
+        modes.verboseOutput = true;
+    }
+    if ( std::find ( args.begin(), args.end(), "-ger" ) != args.end() )
+    {
+        [[maybe_unused]] auto* ignore = setlocale ( LC_ALL, "de_DE.UTF-8" );
+        modes.german_mode             = true;
+    }
+    if ( std::find ( args.begin(), args.end(), "-h" ) != args.end() ||
+         std::find ( args.begin(), args.end(), "--help" ) != args.end() )
+    {
+        std::cout << "\nPossible arguments are:\n"
+                  << "\t-d, --debug    activate debug mode for more verbose output\n"
+                  << "\t-ger           activate german input mode (the comma seperator and the point switch roles)\n"
+                  << "\t-h, --help     show all possible arguments\n\n";
+        exit ( 0 );
+    }
+    return modes;
 }

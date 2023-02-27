@@ -24,47 +24,42 @@ auto operator* ( const AST& lhs, const AST& rhs ) -> AST
 
 auto operator/ ( const AST& lhs, const AST& rhs ) -> AST
 {
-    if ( ( rhs.m_type == AST_TYPE::INTEGER && std::get<long long int> ( rhs.m_number ) == 0 ) ||
-         ( rhs.m_type == AST_TYPE::FLOAT && std::get<long double> ( rhs.m_number ) == 0 ) )
+    if ( ( rhs.m_type == AST_TYPE::INTEGER && std::get<LLI> ( rhs.m_number ) == 0 ) ||
+         ( rhs.m_type == AST_TYPE::FLOAT && std::get<LD> ( rhs.m_number ) == 0 ) )
     {
         throw std::runtime_error ( "Division by Zero" );
     }
-    if ( lhs.m_type == AST_TYPE::INTEGER && rhs.m_type == AST_TYPE::INTEGER &&
-         std::get<long long int> ( lhs.m_number ) % std::get<long long int> ( rhs.m_number ) ==
-             0 ) // preserve the type if there is a "clean" integer division
+    if ( lhs.m_type == AST_TYPE::INTEGER &&
+         rhs.m_type == AST_TYPE::INTEGER ) // preserve the type if there is a "clean" integer division
     {
-        return AST { std::get<long long int> ( lhs.m_number ) / std::get<long long int> ( rhs.m_number ) };
+        const Fraction temp { std::get<LLI> ( lhs.m_number ), std::get<LLI> ( rhs.m_number ) };
+        if ( temp.is_whole() ) { return AST { static_cast<LLI> ( temp ) }; }
+        return AST { temp };
     }
-    long double res {};
-    std::visit ( [&] ( auto div1, auto div2 ) { res = static_cast<long double> ( div1 ) / static_cast<long double> ( div2 ); },
-                 lhs.m_number,
-                 rhs.m_number );
-    return AST { res };
+
+    AST node {};
+    std::visit ( [&] ( auto div1, auto div2 ) { node = AST { div1 / div2 }; }, lhs.m_number, rhs.m_number );
+    return AST { node };
 }
 
 auto operator^ ( const AST& lhs, const AST& rhs ) -> AST
 {
-    if ( ( rhs.m_type == AST_TYPE::INTEGER && std::get<long long int> ( rhs.m_number ) == 0 ) ||
-         ( rhs.m_type == AST_TYPE::FLOAT && std::get<long double> ( rhs.m_number ) == 0 ) )
+    if ( ( rhs.m_type == AST_TYPE::INTEGER && std::get<LLI> ( rhs.m_number ) == 0 ) ||
+         ( rhs.m_type == AST_TYPE::FLOAT && std::get<LD> ( rhs.m_number ) == 0 ) )
     {
         return AST { 1LL };
     }
     if ( lhs.m_type == AST_TYPE::INTEGER &&
          rhs.m_type == AST_TYPE::INTEGER ) // exponentiation while preserving the integer type
     {
-        long long int res = 1;
-        for ( long long int i = 0; i < std::get<long long int> ( rhs.m_number ); ++i )
-        {
-            res *= std::get<long long int> ( lhs.m_number );
-        }
+        LLI res = 1;
+        for ( LLI i = 0; i < std::get<LLI> ( rhs.m_number ); ++i ) { res *= std::get<LLI> ( lhs.m_number ); }
         return AST { res };
     }
 
-    long double res {};
+    LD res {};
     std::visit (
-        [&] ( auto base, auto exponent ) {
-            res = std::powl ( static_cast<long double> ( base ), static_cast<long double> ( exponent ) );
-        },
+        [&] ( auto base, auto exponent ) { res = std::powl ( static_cast<LD> ( base ), static_cast<LD> ( exponent ) ); },
         lhs.m_number,
         rhs.m_number );
     return AST { res };

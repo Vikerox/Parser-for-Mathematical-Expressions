@@ -2,6 +2,7 @@
 #include <cmath>
 #include <iostream>
 #include <memory>
+#include <pfme/Fraction.hpp>
 #include <stdexcept>
 #include <string>
 #include <variant>
@@ -14,6 +15,8 @@
  */
 namespace pfme
 {
+using LD  = long double;
+using LLI = long long int;
 /**
  * Enum for the types of AST nodes.
  */
@@ -27,6 +30,7 @@ enum class AST_TYPE : int
     INTEGER,        /**< Integer */
     FLOAT,          /**< Float */
     EMPTY,          /**< Empty */
+    FRACTION,
 };
 
 /**
@@ -37,7 +41,7 @@ enum class AST_TYPE : int
  */
 struct AST
 {
-    using num_t                  = std::variant<long long int, long double>;
+    using num_t                  = std::variant<LLI, LD, Fraction>;
     AST_TYPE             m_type  = AST_TYPE::EMPTY; /**< The type of the node, set to empty. */
     std::string          m_value = "0"; /**< The Value of the node, generally either the number as a string or the operation. */
     num_t                m_number          = 0LL;
@@ -71,7 +75,7 @@ struct AST
      * Helper constructor, sets the node as type integer.
      * @param number is the integer number the node will be set to
      */
-    explicit AST ( long long int number )
+    explicit AST ( LLI number )
         : m_type ( AST_TYPE::INTEGER )
         , m_value ( std::to_string ( number ) )
         , m_number ( number )
@@ -81,9 +85,19 @@ struct AST
      * Helper constructor, sets the node as type float without losing precision.
      * @param number is the float number the node will be set to
      */
-    explicit AST ( long double number )
+    explicit AST ( LD number )
         : m_type ( AST_TYPE::FLOAT )
         , m_value ( std::to_string ( number ) )
+        , m_number ( number )
+    {
+    }
+    /**
+     * Helper constructor, sets the node as type fraction.
+     * @param number is the fraction number the node will be set to
+     */
+    explicit AST ( Fraction number )
+        : m_type ( AST_TYPE::FRACTION )
+        , m_value ( number.to_string() )
         , m_number ( number )
     {
     }
@@ -110,6 +124,7 @@ struct AST
         case AST_TYPE::SUBTRACTION: return "Subtraction";
         case AST_TYPE::EXPONENTIATION: return "Exponentiation";
         case AST_TYPE::INTEGER: [[fallthrough]];
+        case AST_TYPE::FRACTION: [[fallthrough]];
         case AST_TYPE::FLOAT: return m_value;
         case AST_TYPE::EMPTY: return "Empty";
         default: return "";
@@ -122,7 +137,8 @@ struct AST
 	 */
     auto is_num() const -> bool
     {
-        return ( m_type == AST_TYPE::INTEGER || m_type == AST_TYPE::FLOAT || m_type == AST_TYPE::EMPTY );
+        return ( m_type == AST_TYPE::INTEGER || m_type == AST_TYPE::FLOAT || m_type == AST_TYPE::EMPTY ||
+                 m_type == AST_TYPE::FRACTION );
     }
 
     friend auto operator+ ( const AST& lhs, const AST& rhs ) -> AST;

@@ -8,6 +8,18 @@ Visitor::Visitor ( std::unique_ptr<Parser>&& parser )
     m_parser->parse();
 }
 
+Visitor::Visitor ( const std::string& input )
+    : m_parser ( std::make_unique<Parser> ( input ) )
+{
+    m_parser->parse();
+}
+
+Visitor::Visitor ( std::unique_ptr<Lexer>&& lexer )
+    : m_parser ( std::make_unique<Parser> ( std::move ( lexer ) ) )
+{
+    m_parser->parse();
+}
+
 auto Visitor::print_tree() const -> void { this->m_parser->print_binary_tree ( m_parser->get_root().get() ); }
 
 auto Visitor::visit() -> std::string

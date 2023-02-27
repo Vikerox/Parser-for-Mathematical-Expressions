@@ -1,6 +1,9 @@
 #include <gtest/gtest.h>
 #include <pfme/AST.hpp>
 
+using LD  = long double;
+using LLI = long long int;
+
 TEST ( AST, Constructor )
 {
     pfme::AST ast_std;
@@ -16,11 +19,11 @@ TEST ( AST, Constructor )
 
     ASSERT_EQ ( ast_t_and_v_i.m_type, pfme::AST_TYPE::INTEGER );
     ASSERT_EQ ( ast_t_and_v_i.m_value, "200" );
-    ASSERT_EQ ( std::get<long long int> ( ast_t_and_v_i.m_number ), 200 );
+    ASSERT_EQ ( std::get<LLI> ( ast_t_and_v_i.m_number ), 200 );
 
     ASSERT_EQ ( ast_t_and_v_f.m_type, pfme::AST_TYPE::FLOAT );
     ASSERT_EQ ( ast_t_and_v_f.m_value, "3.6" );
-    ASSERT_DOUBLE_EQ ( std::get<long double> ( ast_t_and_v_f.m_number ), 3.6 );
+    ASSERT_DOUBLE_EQ ( std::get<LD> ( ast_t_and_v_f.m_number ), 3.6 );
 
     ASSERT_EQ ( ast_node.m_type, pfme::AST_TYPE::EMPTY );
     ASSERT_EQ ( ast_node.rhand, nullptr );
@@ -28,11 +31,11 @@ TEST ( AST, Constructor )
 
     ASSERT_EQ ( ast_float.m_type, pfme::AST_TYPE::FLOAT );
     ASSERT_EQ ( ast_float.m_value, std::to_string ( 2.37l ) );
-    ASSERT_DOUBLE_EQ ( std::get<long double> ( ast_float.m_number ), 2.37l );
+    ASSERT_DOUBLE_EQ ( std::get<LD> ( ast_float.m_number ), 2.37l );
 
     ASSERT_EQ ( ast_integer.m_type, pfme::AST_TYPE::INTEGER );
     ASSERT_EQ ( ast_integer.m_value, std::to_string ( 5 ) );
-    ASSERT_EQ ( std::get<long long int> ( ast_integer.m_number ), 5 );
+    ASSERT_EQ ( std::get<LLI> ( ast_integer.m_number ), 5 );
 }
 
 TEST ( AST, operation_to_string )
@@ -66,10 +69,10 @@ TEST ( AST, plus_operator )
     pfme::AST ast_float ( pfme::AST_TYPE::FLOAT, "2.37" );
     pfme::AST ast_int ( pfme::AST_TYPE::INTEGER, "5" );
 
-    ASSERT_EQ ( std::get<long long int> ( ( ast_int + ast_int ).m_number ), 5 + 5 );
-    ASSERT_DOUBLE_EQ ( std::get<long double> ( ( ast_int + ast_float ).m_number ), 5 + 2.37 );
-    ASSERT_DOUBLE_EQ ( std::get<long double> ( ( ast_float + ast_int ).m_number ), 2.37 + 5 );
-    ASSERT_DOUBLE_EQ ( std::get<long double> ( ( ast_float + ast_float ).m_number ), 2.37 + 2.37 );
+    ASSERT_EQ ( std::get<LLI> ( ( ast_int + ast_int ).m_number ), 5 + 5 );
+    ASSERT_DOUBLE_EQ ( std::get<LD> ( ( ast_int + ast_float ).m_number ), 5 + 2.37 );
+    ASSERT_DOUBLE_EQ ( std::get<LD> ( ( ast_float + ast_int ).m_number ), 2.37 + 5 );
+    ASSERT_DOUBLE_EQ ( std::get<LD> ( ( ast_float + ast_float ).m_number ), 2.37 + 2.37 );
 }
 
 TEST ( AST, minus_operator )
@@ -77,20 +80,20 @@ TEST ( AST, minus_operator )
     pfme::AST ast_float ( pfme::AST_TYPE::FLOAT, "2.37" );
     pfme::AST ast_int ( pfme::AST_TYPE::INTEGER, "5" );
 
-    ASSERT_EQ ( std::get<long long int> ( ( ast_int - ast_int ).m_number ), 5 - 5 );
-    ASSERT_DOUBLE_EQ ( std::get<long double> ( ( ast_int - ast_float ).m_number ), 5 - 2.37 );
-    ASSERT_DOUBLE_EQ ( std::get<long double> ( ( ast_float - ast_int ).m_number ), 2.37 - 5 );
-    ASSERT_DOUBLE_EQ ( std::get<long double> ( ( ast_float - ast_float ).m_number ), 2.37 - 2.37 );
+    ASSERT_EQ ( std::get<LLI> ( ( ast_int - ast_int ).m_number ), 5 - 5 );
+    ASSERT_DOUBLE_EQ ( std::get<LD> ( ( ast_int - ast_float ).m_number ), 5 - 2.37 );
+    ASSERT_DOUBLE_EQ ( std::get<LD> ( ( ast_float - ast_int ).m_number ), 2.37 - 5 );
+    ASSERT_DOUBLE_EQ ( std::get<LD> ( ( ast_float - ast_float ).m_number ), 2.37 - 2.37 );
 }
 TEST ( AST, multiplication_operator )
 {
     pfme::AST ast_float ( pfme::AST_TYPE::FLOAT, "2.37" );
     pfme::AST ast_int ( pfme::AST_TYPE::INTEGER, "5" );
 
-    ASSERT_EQ ( std::get<long long int> ( ( ast_int * ast_int ).m_number ), 5 * 5 );
-    ASSERT_DOUBLE_EQ ( std::get<long double> ( ( ast_int * ast_float ).m_number ), 5 * 2.37 );
-    ASSERT_DOUBLE_EQ ( std::get<long double> ( ( ast_float * ast_int ).m_number ), 2.37 * 5 );
-    ASSERT_DOUBLE_EQ ( std::get<long double> ( ( ast_float * ast_float ).m_number ), 2.37 * 2.37 );
+    ASSERT_EQ ( std::get<LLI> ( ( ast_int * ast_int ).m_number ), 5 * 5 );
+    ASSERT_DOUBLE_EQ ( std::get<LD> ( ( ast_int * ast_float ).m_number ), 5 * 2.37 );
+    ASSERT_DOUBLE_EQ ( std::get<LD> ( ( ast_float * ast_int ).m_number ), 2.37 * 5 );
+    ASSERT_DOUBLE_EQ ( std::get<LD> ( ( ast_float * ast_float ).m_number ), 2.37 * 2.37 );
 }
 TEST ( AST, division_operator )
 {
@@ -101,11 +104,11 @@ TEST ( AST, division_operator )
     pfme::AST ast_zero_i ( pfme::AST_TYPE::FLOAT, "0.0" );
 
 
-    ASSERT_EQ ( std::get<long long int> ( ( ast_int / ast_int ).m_number ), 5 / 5 );
-    ASSERT_DOUBLE_EQ ( std::get<long double> ( ( ast_int / ast_three ).m_number ), static_cast<long double> ( 5 ) / 3 );
-    ASSERT_DOUBLE_EQ ( std::get<long double> ( ( ast_int / ast_float ).m_number ), 5 / 2.37 );
-    ASSERT_DOUBLE_EQ ( std::get<long double> ( ( ast_float / ast_int ).m_number ), 2.37 / 5 );
-    ASSERT_DOUBLE_EQ ( std::get<long double> ( ( ast_float / ast_float ).m_number ), 2.37 / 2.37 );
+    ASSERT_EQ ( std::get<LLI> ( ( ast_int / ast_int ).m_number ), 5 / 5 );
+    ASSERT_EQ ( std::get<pfme::Fraction> ( ( ast_int / ast_three ).m_number ), pfme::Fraction ( 5, 3 ) );
+    ASSERT_DOUBLE_EQ ( std::get<LD> ( ( ast_int / ast_float ).m_number ), 5 / 2.37 );
+    ASSERT_DOUBLE_EQ ( std::get<LD> ( ( ast_float / ast_int ).m_number ), 2.37 / 5 );
+    ASSERT_DOUBLE_EQ ( std::get<LD> ( ( ast_float / ast_float ).m_number ), 2.37 / 2.37 );
 
     ASSERT_ANY_THROW ( ast_int / ast_zero_i );
     ASSERT_ANY_THROW ( ast_int / ast_zero_f );
@@ -120,15 +123,15 @@ TEST ( AST, exponent_operator )
     pfme::AST ast_zero_i ( pfme::AST_TYPE::FLOAT, "0.0" );
 
 
-    ASSERT_EQ ( std::get<long long int> ( ( ast_int ^ ast_int ).m_number ), 5 * 5 * 5 * 5 * 5 );
-    ASSERT_DOUBLE_EQ ( std::get<long double> ( ( ast_int ^ ast_float ).m_number ), std::powl ( 5l, 2.37l ) );
-    ASSERT_DOUBLE_EQ ( std::get<long double> ( ( ast_float ^ ast_int ).m_number ), std::powl ( 2.37l, 5l ) );
-    ASSERT_DOUBLE_EQ ( std::get<long double> ( ( ast_float ^ ast_float ).m_number ), std::powl ( 2.37l, 2.37l ) );
+    ASSERT_EQ ( std::get<LLI> ( ( ast_int ^ ast_int ).m_number ), 5 * 5 * 5 * 5 * 5 );
+    ASSERT_DOUBLE_EQ ( std::get<LD> ( ( ast_int ^ ast_float ).m_number ), std::powl ( 5l, 2.37l ) );
+    ASSERT_DOUBLE_EQ ( std::get<LD> ( ( ast_float ^ ast_int ).m_number ), std::powl ( 2.37l, 5l ) );
+    ASSERT_DOUBLE_EQ ( std::get<LD> ( ( ast_float ^ ast_float ).m_number ), std::powl ( 2.37l, 2.37l ) );
 
-    ASSERT_EQ ( std::get<long long int> ( ( ast_int ^ ast_zero_i ).m_number ), 1 );
-    ASSERT_EQ ( std::get<long long int> ( ( ast_int ^ ast_zero_f ).m_number ), 1 );
-    ASSERT_EQ ( std::get<long long int> ( ( ast_float ^ ast_zero_i ).m_number ), 1 );
-    ASSERT_EQ ( std::get<long long int> ( ( ast_float ^ ast_zero_f ).m_number ), 1 );
+    ASSERT_EQ ( std::get<LLI> ( ( ast_int ^ ast_zero_i ).m_number ), 1 );
+    ASSERT_EQ ( std::get<LLI> ( ( ast_int ^ ast_zero_f ).m_number ), 1 );
+    ASSERT_EQ ( std::get<LLI> ( ( ast_float ^ ast_zero_i ).m_number ), 1 );
+    ASSERT_EQ ( std::get<LLI> ( ( ast_float ^ ast_zero_f ).m_number ), 1 );
 }
 
 int main ( int argc, char** argv )

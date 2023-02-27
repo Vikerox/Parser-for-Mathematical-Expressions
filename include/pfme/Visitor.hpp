@@ -18,6 +18,18 @@ public:
     explicit Visitor ( std::unique_ptr<Parser>&& parser );
 
     /**
+     * Initialises the Visitor with a parser through an input string.
+     * @param input is the input string used
+     */
+    explicit Visitor ( const std::string& input );
+
+    /**
+     * Initialises the Visitor with a parser through a Lexer.
+     * @param lexer is the input Lexer
+     */
+    explicit Visitor ( std::unique_ptr<Lexer>&& lexer );
+
+    /**
 	 * @brief Will visit all nodes of the binary tree constructed by the parser.
 	 * It will loop over the tree until the root node is a number, to do that it:
 	 * - recursively looks for an operation node with two numbers as children
@@ -45,8 +57,8 @@ public:
     auto set_debug_mode ( bool debug ) -> void { m_debug_mode = debug; }
 
 private:
-    std::unique_ptr<Parser>&& m_parser;
-    bool                      m_debug_mode = false;
+    std::unique_ptr<Parser> m_parser     = nullptr;
+    bool                    m_debug_mode = false;
 
     static auto traverse_tree ( std::shared_ptr<AST>& node ) -> std::shared_ptr<AST>&;
 };

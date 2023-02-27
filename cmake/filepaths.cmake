@@ -4,6 +4,7 @@ set(sources
     src/cpp/Parser.cpp
     src/cpp/Token.cpp
     src/cpp/Visitor.cpp
+	src/cpp/Fraction.cpp
 )
 
 set(absolute_sources ${sources})
@@ -25,6 +26,7 @@ set(headers
     include/pfme/Parser.hpp
     include/pfme/Token.hpp
     include/pfme/Visitor.hpp
+	include/pfme/Fraction.hpp
 )
 
 set(absolute_headers ${headers})
@@ -37,6 +39,7 @@ set(test_sources
     src/Parser.cpp
     src/Token.cpp
     src/Visitor.cpp
+	src/Fraction.cpp
 )
 
 set(source_test_sources ${test_sources})

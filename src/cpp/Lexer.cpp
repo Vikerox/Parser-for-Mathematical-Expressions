@@ -7,11 +7,11 @@ Lexer::Lexer ( std::string_view data )
 {
 }
 
-Lexer::Lexer ( std::string_view data, char point_sym, std::vector<char> seperators )
+Lexer::Lexer ( std::string_view data, char point_sym, std::vector<char>&& seperators )
     : m_contents ( data )
     , m_current_char ( m_contents[m_index] )
     , m_point_symbol ( point_sym )
-    , m_seperators ( seperators )
+    , m_seperators ( std::move(seperators) )
 
 {
 }

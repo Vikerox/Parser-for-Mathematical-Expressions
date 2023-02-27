@@ -27,7 +27,7 @@ public:
     Lexer& operator= ( const Lexer& ) = default;
     Lexer& operator= ( Lexer&& )      = default;
 
-    Lexer ( std::string_view data, char point_sym, std::vector<char> seperators );
+    Lexer ( std::string_view data, char point_sym, std::vector<char>&& seperators );
     /**
 	 * Collects the next token.
 	 * @return The found token as an unique_ptr

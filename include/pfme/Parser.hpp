@@ -46,10 +46,16 @@ class Parser
 public:
     /**
      * @brief Initialises the Parser by giving it a Lexer.
-     * Sets the internal Lexer, the Lexer is advanced and the current token is set to the return value,
+     * Sets the internal Lexer, the Lexer is advanced and the current token is set to the return value of Lexer::get_next_token()
      * @param lexer is the Lexer that the Parser will use, should contain a string to be parsed
      */
     explicit Parser ( std::unique_ptr<Lexer>&& lexer );
+    /**
+     * @brief Initialises the Parser by giving it a Lexer.
+     * Sets the internal Lexer, the Lexer is advanced and the current token is set to the return value of Lexer::get_next_token()
+     * @param input is the input string with which the Lexer will be initialised
+     */
+    explicit Parser ( const std::string& input );
     Parser ( const Parser& )            = default;
     Parser ( Parser&& )                 = default;
     ~Parser()                           = default;
